@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\country;
 
 class CountryController extends Controller
 {
@@ -11,7 +12,8 @@ class CountryController extends Controller
      */
     public function index()
     {
-        //
+        $list = country::all();
+        return view('country.index', compact('list'));
     }
 
     /**
@@ -19,7 +21,8 @@ class CountryController extends Controller
      */
     public function create()
     {
-        //
+        $list = country::all();
+        return view('country.create', compact('list'));
     }
 
     /**
@@ -27,7 +30,15 @@ class CountryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $country = new country();
+        $country->title = $data['title'];
+        $country->description = $data['description'];
+        $country->status = $request->input('status', 0);
+        $country->save();
+
+        return redirect()->back()->with('success', 'Thêm thể loại thành công!');
     }
 
     /**
@@ -35,7 +46,8 @@ class CountryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $country = country::findOrFail($id);
+        return view('country.show', compact('country'));
     }
 
     /**
@@ -43,7 +55,9 @@ class CountryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $country = country::findOrFail($id);
+        $list = country::all();
+        return view('country.create', compact('list', 'country'));
     }
 
     /**
@@ -51,7 +65,15 @@ class CountryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->all();
+
+        $country = country::findOrFail($id);
+        $country->title = $data['title'];
+        $country->description = $data['description'];
+        $country->status = $request->input('status', 0);
+        $country->save();
+
+        return redirect()->back()->with('success', 'Cập nhật thể loại thành công!');
     }
 
     /**
@@ -59,6 +81,7 @@ class CountryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        country::findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Xóa thể loại thành công!');
     }
 }

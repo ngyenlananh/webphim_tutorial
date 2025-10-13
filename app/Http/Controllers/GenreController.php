@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Genre;
 
 class GenreController extends Controller
 {
@@ -11,7 +12,8 @@ class GenreController extends Controller
      */
     public function index()
     {
-        //
+        $list = Genre::all();
+        return view('genre.index', compact('list'));
     }
 
     /**
@@ -19,7 +21,8 @@ class GenreController extends Controller
      */
     public function create()
     {
-       // echo 'the loai phim ';
+        $list = Genre::all();
+        return view('genre.create', compact('list'));
     }
 
     /**
@@ -27,7 +30,15 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $genre = new Genre();
+        $genre->title = $data['title'];
+        $genre->description = $data['description'];
+        $genre->status = $request->input('status', 0);
+        $genre->save();
+
+        return redirect()->back()->with('success', 'Thêm thể loại thành công!');
     }
 
     /**
@@ -35,7 +46,8 @@ class GenreController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $genre = Genre::findOrFail($id);
+        return view('genre.show', compact('genre'));
     }
 
     /**
@@ -43,7 +55,9 @@ class GenreController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $genre = Genre::findOrFail($id);
+        $list = Genre::all();
+        return view('genre.create', compact('list', 'genre'));
     }
 
     /**
@@ -51,7 +65,15 @@ class GenreController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->all();
+
+        $genre = Genre::findOrFail($id);
+        $genre->title = $data['title'];
+        $genre->description = $data['description'];
+        $genre->status = $request->input('status', 0);
+        $genre->save();
+
+        return redirect()->back()->with('success', 'Cập nhật thể loại thành công!');
     }
 
     /**
@@ -59,6 +81,7 @@ class GenreController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Genre::findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Xóa thể loại thành công!');
     }
 }

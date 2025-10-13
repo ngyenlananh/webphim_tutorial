@@ -23,3 +23,4 @@ class HomeController extends Controller
         return view('home'); // hoặc 'home' nếu file view ở resources/views/home.blade.php
     }
 }
+
